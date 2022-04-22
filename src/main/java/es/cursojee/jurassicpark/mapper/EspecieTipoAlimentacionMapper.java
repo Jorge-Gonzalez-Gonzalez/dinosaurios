@@ -1,0 +1,15 @@
+package es.cursojee.jurassicpark.mapper;
+
+import org.mapstruct.Mapper;
+
+import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.RequestCreateEspecieTipoAlimentacionDto;
+import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.ResponseEspecieTipoAlimentacionDto;
+import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
+
+@Mapper(componentModel = "spring")
+public interface EspecieTipoAlimentacionMapper {
+
+	EspecieTipoAlimentacion requestCreateEspecieTipoAlimentacionDtoToEspecieTipoAlimentacion(RequestCreateEspecieTipoAlimentacionDto requestCreateEspecieTipoAlimentacionDto);
+	
+	ResponseEspecieTipoAlimentacionDto especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(EspecieTipoAlimentacion especieTipoAlimentacion);
+}
