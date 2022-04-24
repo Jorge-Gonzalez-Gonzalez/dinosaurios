@@ -1,10 +1,22 @@
 package es.cursojee.jurassicpark.services;
 
+import java.util.List;
+
 import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.RequestCreateEspecieTipoAlimentacionDto;
+import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.RequestDeleteEspecieTipoAlimentacionDto;
+import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.RequestUpdateEspecieTipoAlimentacionDto;
 import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.ResponseEspecieTipoAlimentacionDto;
+import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
+import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
+import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 
 public interface EspecieTipoAlimentacionService {
 
 	static final String BEAN_NAME ="especieTipoAlimentacionService";
-	ResponseEspecieTipoAlimentacionDto create(RequestCreateEspecieTipoAlimentacionDto requestCreateEspecieTipoAlimentacionDto);
+	List<ResponseEspecieTipoAlimentacionDto> findAll();
+	ResponseEspecieTipoAlimentacionDto findEspecieTipoAlimentacionById(Long id) throws DinosaurioElementNotFoundException;
+	ResponseEspecieTipoAlimentacionDto create(RequestCreateEspecieTipoAlimentacionDto requestCreateEspecieTipoAlimentacionDto) throws DinosaurioElementNotFoundException;
+	ResponseEspecieTipoAlimentacionDto update(RequestUpdateEspecieTipoAlimentacionDto requestUpdateEspecieTipoAlimentacionDto) throws DinosaurioElementNotFoundException;
+	void delete(RequestDeleteEspecieTipoAlimentacionDto requestDeleteEspecieTipoAlimentacionDto) throws NotConfirmDeleteDinosaurio, DinosaurioElementNotFoundException;
+	EspecieTipoAlimentacion findById(Long id) throws DinosaurioElementNotFoundException;
 }

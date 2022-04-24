@@ -3,8 +3,7 @@ package es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion;
 import lombok.Data;
 
 @Data
-public class ResponseEspecieTipoAlimentacionDto {
+public class RequestDeleteEspecieTipoAlimentacionDto {
 	private Long id;
-	private Long idEspecie;
-	private Long idTipoAlimentacion;
+	private Boolean confirmacion;
 }

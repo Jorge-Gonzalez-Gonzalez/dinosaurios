@@ -1,8 +1,12 @@
 package es.cursojee.jurassicpark.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
 import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.RequestCreateEspecieTipoAlimentacionDto;
+import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.RequestUpdateEspecieTipoAlimentacionDto;
 import es.cursojee.jurassicpark.controller.dto.especieTipoAlimentacion.ResponseEspecieTipoAlimentacionDto;
 import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 
@@ -10,6 +14,7 @@ import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 public interface EspecieTipoAlimentacionMapper {
 
 	EspecieTipoAlimentacion requestCreateEspecieTipoAlimentacionDtoToEspecieTipoAlimentacion(RequestCreateEspecieTipoAlimentacionDto requestCreateEspecieTipoAlimentacionDto);
-	
+	EspecieTipoAlimentacion requestUpdateEspecieTipoAlimentacionDtoToEspecieTipoAlimentacion(RequestUpdateEspecieTipoAlimentacionDto requestUpdateEspecieTipoAlimentacionDto,@MappingTarget EspecieTipoAlimentacion especieTipoalimentacion);
 	ResponseEspecieTipoAlimentacionDto especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(EspecieTipoAlimentacion especieTipoAlimentacion);
+	List<ResponseEspecieTipoAlimentacionDto> listEspecieTipoAlimentacionToListResponseEspecieTipoAlimentacionDto(List<EspecieTipoAlimentacion> listaEspecieTipoAlimentacion);
 }
