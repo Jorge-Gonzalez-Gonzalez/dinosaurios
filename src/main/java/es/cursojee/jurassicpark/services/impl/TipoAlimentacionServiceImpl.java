@@ -20,7 +20,7 @@ import es.cursojee.jurassicpark.services.TipoAlimentacionService;
 import lombok.extern.slf4j.Slf4j;
 
 @Transactional
-@Service(FamiliaService.BEAN_NAME)
+@Service(TipoAlimentacionService.BEAN_NAME)
 @Slf4j
 public class TipoAlimentacionServiceImpl implements TipoAlimentacionService{
 	

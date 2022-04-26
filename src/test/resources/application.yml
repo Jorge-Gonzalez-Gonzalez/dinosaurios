@@ -1,0 +1,22 @@
+logging:
+#  file:
+#    name: application.log
+  pattern:
+    file: "%d{dd/MM/yyyy - HH:mm:ss.SSS} [User: %X{user}] [%thread][%level][%logger]-- %msg -%xEx{full} %n"
+  level:
+    root: ERROR
+spring:
+  datasource:
+    url: jdbc:hsqldb:mem:test;sql.syntax_mys=true;
+    username: test
+    password: test
+    driver-class-name: org.hsqldb.jdbcDriver
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.HSQLDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true

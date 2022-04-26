@@ -38,10 +38,10 @@ public class Especie implements Serializable{/**
 	@Column(name = "longitud", nullable = false, length = 3)
 	private Integer longitud;
 	
-	@Column(name = "anio_desde", nullable = false, length = 3)
+	@Column(name = "anio_desde", nullable = true, length = 3)
 	private Integer anioDesde;
 	
-	@Column(name = "anio_hasta", nullable = false, length = 3)
+	@Column(name = "anio_hasta", nullable = true, length = 3)
 	private Integer anioHasta;
 	
 	@ManyToOne

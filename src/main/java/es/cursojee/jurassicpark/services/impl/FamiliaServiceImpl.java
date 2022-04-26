@@ -75,7 +75,7 @@ public class FamiliaServiceImpl implements FamiliaService {
 	public Familia findById(Long id) throws DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
 		Familia familia = familiaRepository.getById(id);
-		if(familia != null) {
+		if(familia == null) {
 			throw new DinosaurioElementNotFoundException("No existe el dinosaurio con ese id");
 		}
 		return familiaRepository.getById(id);

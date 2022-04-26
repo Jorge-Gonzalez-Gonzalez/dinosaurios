@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+
+	<familia ID="1001" nombre="Familia1" />
+	<familia ID="1002" nombre="Familia2" />
+	<familia ID="1003" nombre="Familia3" />
+	<familia ID="1004" nombre="Familia4" />
+
+	<tipo_alimentacion ID="1001" descripcion="Hervíboro" />
+	<tipo_alimentacion ID="1002" descripcion="Carnívoro" />
+	
+	<especie ID="1001" id_familia="1001" nombre="Diplodocus" codigo_tipo_peligrosidad="BAJA" longitud="50" anio_desde="2000000" anio_hasta="1999000"></especie>
+	<especie ID="1002" id_familia="1002" nombre="Velociraptor" codigo_tipo_peligrosidad="ALTA" longitud="10" anio_desde="2000000" anio_hasta="1999000"></especie>
+	<especie ID="1003" id_familia="1003" nombre="Tiranosaurus Rex" codigo_tipo_peligrosidad="ALTA" longitud="35" anio_desde="2000000" anio_hasta="1999000"></especie>
+	<especie ID="1004" id_familia="1004" nombre="Pterodactilo" codigo_tipo_peligrosidad="MEDIA" longitud="15" anio_desde="2000000" anio_hasta="1999000"></especie>
+	
+	<especie_tipo_alimentacion id_especie="1001" id_tipo_alimentacion="1001"></especie_tipo_alimentacion>
+	<especie_tipo_alimentacion id_especie="1002" id_tipo_alimentacion="1002"></especie_tipo_alimentacion>
+	<especie_tipo_alimentacion id_especie="1003" id_tipo_alimentacion="1002"></especie_tipo_alimentacion>
+	<especie_tipo_alimentacion id_especie="1004" id_tipo_alimentacion="1001"></especie_tipo_alimentacion>
+	<especie_tipo_alimentacion id_especie="1004" id_tipo_alimentacion="1002"></especie_tipo_alimentacion>
+	
+</dataset>

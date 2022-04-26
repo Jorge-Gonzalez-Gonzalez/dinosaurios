@@ -25,7 +25,7 @@ public class EspecieTipoAlimentacion  implements Serializable{/**
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="id_esècie")
+	@JoinColumn(name="id_especie")
 	private Especie especie;
 	
 	@ManyToOne
