@@ -17,25 +17,25 @@ import es.cursojee.jurassicpark.model.Especie;
 import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 import es.cursojee.jurassicpark.model.TipoAlimentacion;
 import es.cursojee.jurassicpark.repositories.EspecieTipoAlimentacionRepository;
-import es.cursojee.jurassicpark.services.EspecieService;
-import es.cursojee.jurassicpark.services.EspecieTipoAlimentacionService;
-import es.cursojee.jurassicpark.services.FamiliaService;
-import es.cursojee.jurassicpark.services.TipoAlimentacionService;
+import es.cursojee.jurassicpark.services.EspecieManagementService;
+import es.cursojee.jurassicpark.services.EspecieTipoAlimentacionManagementService;
+import es.cursojee.jurassicpark.services.FamiliaManagementService;
+import es.cursojee.jurassicpark.services.TipoAlimentacionManagementService;
 import lombok.extern.slf4j.Slf4j;
 
 @Transactional
-@Service(EspecieTipoAlimentacionService.BEAN_NAME)
+@Service(EspecieTipoAlimentacionManagementService.BEAN_NAME)
 @Slf4j
-public class EspecieTipoAlimentacionServiceImpl implements EspecieTipoAlimentacionService{
+public class EspecieTipoAlimentacionManagementServiceImpl implements EspecieTipoAlimentacionManagementService{
 
 	@Autowired
 	private EspecieTipoAlimentacionRepository especieTipoAlimentacionRepository;
 	@Autowired
 	private EspecieTipoAlimentacionMapper especieTipoAlimentacionMapper;
 	@Autowired
-	private EspecieService especieService;
+	private EspecieManagementService especieService;
 	@Autowired
-	private TipoAlimentacionService tipoAlimentacionService;
+	private TipoAlimentacionManagementService tipoAlimentacionService;
 	
 	@Override
 	public List<ResponseEspecieTipoAlimentacionDto> findAll() {
@@ -87,6 +87,11 @@ public class EspecieTipoAlimentacionServiceImpl implements EspecieTipoAlimentaci
 		especieTipoAlimentacionRepository.delete(especieTipoAlimentacion);		
 	}
 	
+	@Override
+	public EspecieTipoAlimentacion findByIdEspecie(Long id) {
+		return especieTipoAlimentacionRepository.findByIdEspecie(id);
+	}
+	
 	public EspecieTipoAlimentacion findById(Long id) throws DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
 		EspecieTipoAlimentacion especieTipoAlimentacion = especieTipoAlimentacionRepository.getById(id);
@@ -96,7 +101,7 @@ public class EspecieTipoAlimentacionServiceImpl implements EspecieTipoAlimentaci
 		
 		return especieTipoAlimentacion;
 	}
-
+	
 	
 
 }

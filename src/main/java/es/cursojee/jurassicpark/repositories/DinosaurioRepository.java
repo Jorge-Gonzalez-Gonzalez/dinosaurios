@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import es.cursojee.jurassicpark.model.Especie;
+import es.cursojee.jurassicpark.model.Dinosaurio;
 
 @Repository
-public interface EspecieRepository extends JpaRepository<Especie,Long>{
-	@Query("select e from Especie e where e.familia.id = ?1")
-	List<Especie>findByFamilia(Long id);
+public interface DinosaurioRepository extends JpaRepository<Dinosaurio,Long>{
+	@Query("select d from Dinosaurio d where d.recinto.id = ?1")
+	List<Dinosaurio>findByRecinto(Long id);
 }

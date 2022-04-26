@@ -15,14 +15,14 @@ import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
 import es.cursojee.jurassicpark.mapper.TipoAlimentacionMapper;
 import es.cursojee.jurassicpark.model.TipoAlimentacion;
 import es.cursojee.jurassicpark.repositories.TipoAlimentacionRepository;
-import es.cursojee.jurassicpark.services.FamiliaService;
-import es.cursojee.jurassicpark.services.TipoAlimentacionService;
+import es.cursojee.jurassicpark.services.FamiliaManagementService;
+import es.cursojee.jurassicpark.services.TipoAlimentacionManagementService;
 import lombok.extern.slf4j.Slf4j;
 
 @Transactional
-@Service(TipoAlimentacionService.BEAN_NAME)
+@Service(TipoAlimentacionManagementService.BEAN_NAME)
 @Slf4j
-public class TipoAlimentacionServiceImpl implements TipoAlimentacionService{
+public class TipoAlimentacionManagementServiceImpl implements TipoAlimentacionManagementService{
 	
 	@Autowired
 	private TipoAlimentacionRepository tipoAlimentacionRepository;

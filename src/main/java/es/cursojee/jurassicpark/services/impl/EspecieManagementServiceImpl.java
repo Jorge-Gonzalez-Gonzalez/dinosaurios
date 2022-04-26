@@ -2,6 +2,8 @@ package es.cursojee.jurassicpark.services.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,14 +18,14 @@ import es.cursojee.jurassicpark.mapper.EspecieMapper;
 import es.cursojee.jurassicpark.model.Especie;
 import es.cursojee.jurassicpark.model.Familia;
 import es.cursojee.jurassicpark.repositories.EspecieRepository;
-import es.cursojee.jurassicpark.services.EspecieService;
-import es.cursojee.jurassicpark.services.FamiliaService;
+import es.cursojee.jurassicpark.services.EspecieManagementService;
+import es.cursojee.jurassicpark.services.FamiliaManagementService;
 import lombok.extern.slf4j.Slf4j;
 
 @Transactional
-@Service(EspecieService.BEAN_NAME)
+@Service(EspecieManagementService.BEAN_NAME)
 @Slf4j
-public class EspecieServiceImpl implements EspecieService {
+public class EspecieManagementServiceImpl implements EspecieManagementService {
 
 	@Autowired
 	private EspecieRepository especieRepository;
@@ -31,9 +33,6 @@ public class EspecieServiceImpl implements EspecieService {
 	@Autowired
 	private EspecieMapper especieMapper;
 
-	@Autowired 
-	private FamiliaService familiaService;
-	
 	@Override
 	public List<ResponseEspecieDto> findAll() {
 		// TODO Auto-generated method stub
@@ -52,7 +51,7 @@ public class EspecieServiceImpl implements EspecieService {
 	public ResponseEspecieDto create(RequestCreateEspecieDto requestCreateEspecieDto)
 			throws DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
-		Familia familia = familiaService.findById(requestCreateEspecieDto.getIdFamilia());
+		//Familia familia = familiaService.findById(requestCreateEspecieDto.getIdFamilia());
 		Especie newEspecie = especieMapper.requestCreateEspecieDtoToEspecie(requestCreateEspecieDto);
 		newEspecie = especieRepository.save(newEspecie);
 		return especieMapper.especieToResponseEspecieDto(newEspecie);
@@ -81,13 +80,21 @@ public class EspecieServiceImpl implements EspecieService {
 
 
 	@Override
-	public Especie findById(Long id) throws DinosaurioElementNotFoundException {
+	public Especie findById(Long id) throws DinosaurioElementNotFoundException{
 		// TODO Auto-generated method stub
-		Especie especie = especieRepository.getById(id);
+		Especie especie = especieRepository.findById(id).orElse(null);
+		System.out.println(especie);
 		if (especie == null) {
 			throw new DinosaurioElementNotFoundException("No se ha encontrado el dinosaurio con el id estableciido");
 		}
 		return especie;
+	}
+
+	@Override
+	public List<Especie> findByIdFamilia(Long id) {
+		// TODO Auto-generated method stub
+		List<Especie> listaEspecies = especieRepository.findByFamilia(id);
+		return listaEspecies;
 	}
 
 }

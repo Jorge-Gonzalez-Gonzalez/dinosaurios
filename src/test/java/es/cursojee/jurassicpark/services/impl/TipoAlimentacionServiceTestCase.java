@@ -23,7 +23,7 @@ import es.cursojee.jurassicpark.controller.dto.tipoAlimentacion.RequestUpdateTip
 import es.cursojee.jurassicpark.controller.dto.tipoAlimentacion.ResponseTipoAlimentacionDto;
 import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
 import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
-import es.cursojee.jurassicpark.services.TipoAlimentacionService;
+import es.cursojee.jurassicpark.services.TipoAlimentacionManagementService;
 
 @RunWith(SpringRunner.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
@@ -32,7 +32,7 @@ import es.cursojee.jurassicpark.services.TipoAlimentacionService;
 public class TipoAlimentacionServiceTestCase extends AbstractServiceTestCase{
 	
 	@Autowired
-	private TipoAlimentacionService tipoAlimentacionService;
+	private TipoAlimentacionManagementService tipoAlimentacionService;
 	
 	@Test
 	@DisplayName("Obtener todos los tipos de alimentaciones de dinosaurio existente")

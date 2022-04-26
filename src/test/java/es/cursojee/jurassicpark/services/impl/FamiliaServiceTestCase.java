@@ -22,9 +22,10 @@ import es.cursojee.jurassicpark.controller.dto.familia.RequestDeleteFamiliaDto;
 import es.cursojee.jurassicpark.controller.dto.familia.RequestUpdateFamiliaDto;
 import es.cursojee.jurassicpark.controller.dto.familia.ResponseFamiliaDto;
 import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
+import es.cursojee.jurassicpark.exception.IntegratedForeignKeyException;
 import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
 import es.cursojee.jurassicpark.model.Familia;
-import es.cursojee.jurassicpark.services.FamiliaService;
+import es.cursojee.jurassicpark.services.FamiliaManagementService;
 
 @RunWith(SpringRunner.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
@@ -33,7 +34,7 @@ import es.cursojee.jurassicpark.services.FamiliaService;
 public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 	
 	@Autowired
-	private FamiliaService familiaService;
+	private FamiliaManagementService familiaService;
 	
 	@Test
 	@DisplayName("Obtener todas las familias de dinosaurio existente")
@@ -100,23 +101,24 @@ public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 	}
 	
 	@Test
-	@DisplayName("Eliminar una familia")
+	@DisplayName("Eliminar una familia con especies asociadas")
 	public void testDelete() {
 		try {
-			Familia borrarFamilia = familiaService.findById(1001L);
 			RequestDeleteFamiliaDto borrar = new RequestDeleteFamiliaDto();
-			borrar.setId(borrarFamilia.getId());
+			borrar.setId(1001L);
 			borrar.setConfirmacion(true);
 			familiaService.delete(borrar);
-		
-			} catch (DinosaurioElementNotFoundException e) {
-			// TODO Auto-generated catch block
-			fail("No se ha podido borrar la familia");
-		} 
-		
+			fail("Esta familia esta asociada a una especie o un conjunto de especies");
+		}		
 		catch (NotConfirmDeleteDinosaurio e) {
 				// TODO Auto-generated catch block
 				fail("No se ha confirmado el borrado de la familia");
+		} catch (IntegratedForeignKeyException e) {
+			// TODO Auto-generated catch block
+			
+		} catch (DinosaurioElementNotFoundException e) {
+			// TODO Auto-generated catch block
+			fail("Se esperaba que la familia existiese");
 		}
 	}
 

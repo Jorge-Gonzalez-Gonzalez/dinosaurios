@@ -10,9 +10,9 @@ import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
 import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
 import es.cursojee.jurassicpark.model.TipoAlimentacion;
 
-public interface TipoAlimentacionService {
+public interface TipoAlimentacionManagementService {
 	
-	static final String BEAN_NAME ="tipoAlimentacionService";
+	static final String BEAN_NAME ="tipoAlimentacionManagementService";
 	
 	List<ResponseTipoAlimentacionDto>findAll();
 	ResponseTipoAlimentacionDto findTipoAlimentacionById(Long id) throws DinosaurioElementNotFoundException;

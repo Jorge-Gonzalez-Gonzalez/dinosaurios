@@ -8,4 +8,5 @@ import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 @Repository
 public interface EspecieTipoAlimentacionRepository extends JpaRepository<EspecieTipoAlimentacion,Long>{
 
+	EspecieTipoAlimentacion findByIdEspecie(Long id);
 }

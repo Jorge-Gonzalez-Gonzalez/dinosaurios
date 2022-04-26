@@ -10,13 +10,14 @@ import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
 import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
 import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 
-public interface EspecieTipoAlimentacionService {
+public interface EspecieTipoAlimentacionManagementService {
 
-	static final String BEAN_NAME ="especieTipoAlimentacionService";
+	static final String BEAN_NAME ="especieTipoAlimentacionManagementService";
 	List<ResponseEspecieTipoAlimentacionDto> findAll();
 	ResponseEspecieTipoAlimentacionDto findEspecieTipoAlimentacionById(Long id) throws DinosaurioElementNotFoundException;
 	ResponseEspecieTipoAlimentacionDto create(RequestCreateEspecieTipoAlimentacionDto requestCreateEspecieTipoAlimentacionDto) throws DinosaurioElementNotFoundException;
 	ResponseEspecieTipoAlimentacionDto update(RequestUpdateEspecieTipoAlimentacionDto requestUpdateEspecieTipoAlimentacionDto) throws DinosaurioElementNotFoundException;
 	void delete(RequestDeleteEspecieTipoAlimentacionDto requestDeleteEspecieTipoAlimentacionDto) throws NotConfirmDeleteDinosaurio, DinosaurioElementNotFoundException;
 	EspecieTipoAlimentacion findById(Long id) throws DinosaurioElementNotFoundException;
+	EspecieTipoAlimentacion findByIdEspecie(Long id);
 }

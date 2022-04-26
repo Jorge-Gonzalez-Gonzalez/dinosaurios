@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +26,7 @@ import es.cursojee.jurassicpark.controller.dto.especie.ResponseEspecieDto;
 import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
 import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
 import es.cursojee.jurassicpark.model.tipoPeligrosidad.CodigoTipoPeligrosidad;
-import es.cursojee.jurassicpark.services.EspecieService;
+import es.cursojee.jurassicpark.services.EspecieManagementService;
 import es.cursojee.jurassicpark.services.impl.AbstractServiceTestCase;
 
 @RunWith(SpringRunner.class)
@@ -34,7 +36,7 @@ import es.cursojee.jurassicpark.services.impl.AbstractServiceTestCase;
 public class EspecieServiceTestCase extends AbstractServiceTestCase{
 	
 	@Autowired
-	private EspecieService especieService;
+	private EspecieManagementService especieService;
 	
 	@Test
 	@DisplayName("Obtener todas las especies de dinosaurio existentes")
@@ -69,9 +71,9 @@ public class EspecieServiceTestCase extends AbstractServiceTestCase{
 
 		try {
 			especieService.findEspecieById(0L);
-			
-		} catch (DinosaurioElementNotFoundException e) {
 			fail("Se esperaba que el elemento no existiera");
+		} catch (DinosaurioElementNotFoundException e) {
+			
 		}
 
 	}
