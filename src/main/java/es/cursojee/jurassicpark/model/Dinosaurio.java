@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import es.cursojee.jurassicpark.model.sexo.Sexo;
-import es.cursojee.jurassicpark.model.tipoPeligrosidad.CodigoTipoPeligrosidad;
 import lombok.Data;
 
 @Data
@@ -45,5 +44,5 @@ public class Dinosaurio implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="id_recinto")
-	private Recinto reciento;
+	private Recinto recinto;
 }

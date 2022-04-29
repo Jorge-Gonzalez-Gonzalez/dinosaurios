@@ -8,13 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.cursojee.jurassicpark.model.Dinosaurio;
 import es.cursojee.jurassicpark.repositories.DinosaurioRepository;
-import es.cursojee.jurassicpark.services.EspecieManagementService;
 import es.cursojee.jurassicpark.services.basic.DinosaurioService;
-import lombok.extern.slf4j.Slf4j;
 
 @Transactional
-@Service(EspecieManagementService.BEAN_NAME)
-@Slf4j
+@Service(DinosaurioService.BEAN_NAME)
+
 public class DinosaurioServiceImpl implements DinosaurioService {
 
 	@Autowired

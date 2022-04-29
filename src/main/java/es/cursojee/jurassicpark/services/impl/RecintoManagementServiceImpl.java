@@ -10,25 +10,18 @@ import es.cursojee.jurassicpark.controller.dto.recinto.RequestCreateRecintoDto;
 import es.cursojee.jurassicpark.controller.dto.recinto.RequestDeleteRecintoDto;
 import es.cursojee.jurassicpark.controller.dto.recinto.RequestUpdateRecintoDto;
 import es.cursojee.jurassicpark.controller.dto.recinto.ResponseRecintoDto;
-import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
 import es.cursojee.jurassicpark.exception.IntegratedForeignKeyException;
-import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
 import es.cursojee.jurassicpark.exception.NotConfirmRecintoDelete;
 import es.cursojee.jurassicpark.exception.RecintoNotFoundException;
 import es.cursojee.jurassicpark.mapper.RecintoMapper;
 import es.cursojee.jurassicpark.model.Dinosaurio;
-import es.cursojee.jurassicpark.model.Especie;
-import es.cursojee.jurassicpark.model.Familia;
 import es.cursojee.jurassicpark.model.Recinto;
-import es.cursojee.jurassicpark.services.EspecieManagementService;
 import es.cursojee.jurassicpark.services.RecintoManagementService;
 import es.cursojee.jurassicpark.services.basic.DinosaurioService;
 import es.cursojee.jurassicpark.services.basic.RecintoService;
-import lombok.extern.slf4j.Slf4j;
 
 @Transactional
-@Service(EspecieManagementService.BEAN_NAME)
-@Slf4j
+@Service(RecintoManagementService.BEAN_NAME)
 public class RecintoManagementServiceImpl implements RecintoManagementService{
 	
 	@Autowired
@@ -67,9 +60,14 @@ public class RecintoManagementServiceImpl implements RecintoManagementService{
 	}
 
 	@Override
-	public ResponseRecintoDto update(RequestUpdateRecintoDto requestUpdateRecintoDto) {
+	public ResponseRecintoDto update(RequestUpdateRecintoDto requestUpdateRecintoDto) throws RecintoNotFoundException {
 		// TODO Auto-generated method stub
 		Recinto updateRecinto = recintoService.findById(requestUpdateRecintoDto.getId());
+		
+		if(updateRecinto == null) {
+			throw new RecintoNotFoundException("No existe el recinto");
+		}
+		
 		updateRecinto = recintoMapper.requestUpdateRecintoDtoToRecinto(requestUpdateRecintoDto, updateRecinto);
 		updateRecinto = recintoService.update(updateRecinto);
 		
@@ -77,18 +75,25 @@ public class RecintoManagementServiceImpl implements RecintoManagementService{
 	}
 
 	@Override
-	public void delete(RequestDeleteRecintoDto requestDeleteRecintoDto) throws NotConfirmRecintoDelete, IntegratedForeignKeyException {
+	public void delete(RequestDeleteRecintoDto requestDeleteRecintoDto) throws NotConfirmRecintoDelete, IntegratedForeignKeyException, RecintoNotFoundException {
 		// TODO Auto-generated method stub
 		if(!requestDeleteRecintoDto.getConfirmacion()) {
 			throw new NotConfirmRecintoDelete("No se ha confirmado el borrado del Recinto");
 		}
-		
+		System.out.println(requestDeleteRecintoDto.getId());
 		List<Dinosaurio> listaDinosaurios = dinosaurioService.findByRecinto(requestDeleteRecintoDto.getId());
-		if(!listaDinosaurios.isEmpty() || listaDinosaurios != null) {
+		
+		System.out.println(listaDinosaurios);
+		if(!listaDinosaurios.isEmpty()) {
 			throw new IntegratedForeignKeyException("Este recinto tiene dinosaurios asociadas y no se puede borrar");
 		}
 		
 		Recinto deleteRecinto = recintoService.findById(requestDeleteRecintoDto.getId());
+		
+		if(deleteRecinto == null) {
+			throw new RecintoNotFoundException("No se ha encontrado el recinto con ese id");
+		}
+		
 		recintoService.delete(deleteRecinto);
 	}
 

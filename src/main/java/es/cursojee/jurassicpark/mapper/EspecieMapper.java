@@ -3,7 +3,6 @@ package es.cursojee.jurassicpark.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import es.cursojee.jurassicpark.controller.dto.especie.RequestCreateEspecieDto;
@@ -16,6 +15,7 @@ public interface EspecieMapper {
 
 	Especie requestCreateEspecieDtoToEspecie(RequestCreateEspecieDto requestCreateEspecieDto);
 	Especie requestUpdateEspecieDtoToEspecie(RequestUpdateEspecieDto requestUpdateEspecieDto,@MappingTarget Especie especie);
+	//@Mapping(source="familia.id",target = "idFamilia")
 	ResponseEspecieDto especieToResponseEspecieDto(Especie especie);
 	List<ResponseEspecieDto> listEspecieToListResponseEspecieDto(List<Especie> listaEspecie);
 	

@@ -22,6 +22,7 @@ import es.cursojee.jurassicpark.controller.dto.tipoAlimentacion.RequestDeleteTip
 import es.cursojee.jurassicpark.controller.dto.tipoAlimentacion.RequestUpdateTipoAlimentacionDto;
 import es.cursojee.jurassicpark.controller.dto.tipoAlimentacion.ResponseTipoAlimentacionDto;
 import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
+import es.cursojee.jurassicpark.exception.IntegratedForeignKeyException;
 import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
 import es.cursojee.jurassicpark.services.TipoAlimentacionManagementService;
 
@@ -38,15 +39,14 @@ public class TipoAlimentacionServiceTestCase extends AbstractServiceTestCase{
 	@DisplayName("Obtener todos los tipos de alimentaciones de dinosaurio existente")
 	public void testFindAll() {
 		List<ResponseTipoAlimentacionDto> listaAlimentacion = tipoAlimentacionService.findAll();
-		assertNotNull(listaAlimentacion);
-		assertEquals(2,listaAlimentacion.size());
+		assertEquals(3,listaAlimentacion.size());
 	}
 	
 	@Test
 	@DisplayName("Obtener un tipo de alimentación existente")
 	public void testTipoAlimentacionExistente() {
 		try {
-			ResponseTipoAlimentacionDto respuesta = tipoAlimentacionService.findTipoAlimentacionById(1002L);
+			ResponseTipoAlimentacionDto respuesta = tipoAlimentacionService.findById(1002L);
 			assertNotNull(respuesta);
 			assertEquals(1002, respuesta.getId().longValue());	
 			assertEquals("Carnívoro", respuesta.getDescripcion());
@@ -63,7 +63,7 @@ public class TipoAlimentacionServiceTestCase extends AbstractServiceTestCase{
 	public void testFindByIdNotExist() {
 		
 		try {
-			tipoAlimentacionService.findTipoAlimentacionById(0L);
+			tipoAlimentacionService.findById(0L);
 			fail("Se esperaba que el elemento no existiera");
 		} catch (DinosaurioElementNotFoundException e) {
 
@@ -71,7 +71,6 @@ public class TipoAlimentacionServiceTestCase extends AbstractServiceTestCase{
 	
 	}
 	
-
 	@Test
 	@DisplayName("Crea un tipo de alimentación")
 	public void testCreate() {
@@ -80,7 +79,7 @@ public class TipoAlimentacionServiceTestCase extends AbstractServiceTestCase{
 		ResponseTipoAlimentacionDto response = tipoAlimentacionService.create(tipoAlimentacion);
 		assertNotNull(response);
 		assertEquals("TipoAlimentacionCreado",response.getDescripcion());
-		assertEquals(1003, response.getId().longValue());
+		assertEquals(1004, response.getId().longValue());
 	}
 	
 	@Test
@@ -103,17 +102,60 @@ public class TipoAlimentacionServiceTestCase extends AbstractServiceTestCase{
 	}
 	
 	@Test
-	@DisplayName("Elimina un tipo de alimentación que existe")
+	@DisplayName("Comprobar que se puede eliminar un tipo de alimentación que no tiene especies asociadas")
 	public void testDelete() {
 		RequestDeleteTipoAlimentacionDto deleteAlimentacion = new RequestDeleteTipoAlimentacionDto();
-		
-		deleteAlimentacion.setId(1001L);
+		deleteAlimentacion.setId(1003L);
 		deleteAlimentacion.setConfirmacion(true);
+		
 		try {
 			tipoAlimentacionService.delete(deleteAlimentacion);
 		} catch (NotConfirmDeleteDinosaurio | DinosaurioElementNotFoundException e) {
 			// TODO Auto-generated catch block
-			fail("no se ha borrado la familia");
+			fail("no se ha borrado el tipo de alimentación");
+		} catch (IntegratedForeignKeyException e) {
+			// TODO Auto-generated catch block
+			fail("no se ha borrado el tipo de alimentación porque tiene especies asociadas");
+		}
+	}
+	
+	@Test
+	@DisplayName("Comprobar que no se puede eliminar un tipo de alimentación que tiene especies asociadas")
+	public void testNotDeleteTipoAlimentacion() {
+		RequestDeleteTipoAlimentacionDto deleteAlimentacion = new RequestDeleteTipoAlimentacionDto();
+		deleteAlimentacion.setId(1001L);
+		deleteAlimentacion.setConfirmacion(true);
+		
+		try {
+			tipoAlimentacionService.delete(deleteAlimentacion);
+			fail("Este tipo de alimentación tiene especies asociadas");
+		} catch (NotConfirmDeleteDinosaurio | DinosaurioElementNotFoundException e) {
+			// TODO Auto-generated catch block
+			fail("no se ha borrado el tipo de alimentación");
+		} catch (IntegratedForeignKeyException e) {
+			// TODO Auto-generated catch block
+			
+		}
+	}
+	
+	@Test
+	@DisplayName("No se ha confirmado el borrado de tipo alimentacion")
+	public void testDeleteNotConfirm() {
+		RequestDeleteTipoAlimentacionDto deleteAlimentacion = new RequestDeleteTipoAlimentacionDto();
+		deleteAlimentacion.setId(1003L);
+		deleteAlimentacion.setConfirmacion(false);
+		
+		try {
+			tipoAlimentacionService.delete(deleteAlimentacion);
+		} catch (DinosaurioElementNotFoundException e) {
+			// TODO Auto-generated catch block
+			fail("no se ha borrado el tipo de alimentación");
+		} catch (IntegratedForeignKeyException e) {
+			// TODO Auto-generated catch block
+			fail("no se ha borrado el tipo de alimentación porque tiene especies asociadas");
+		} catch (NotConfirmDeleteDinosaurio e) {
+			// TODO Auto-generated catch block
+			
 		}
 	}
 

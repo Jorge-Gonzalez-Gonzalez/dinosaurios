@@ -24,7 +24,6 @@ import es.cursojee.jurassicpark.controller.dto.familia.ResponseFamiliaDto;
 import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
 import es.cursojee.jurassicpark.exception.IntegratedForeignKeyException;
 import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
-import es.cursojee.jurassicpark.model.Familia;
 import es.cursojee.jurassicpark.services.FamiliaManagementService;
 
 @RunWith(SpringRunner.class)
@@ -41,7 +40,7 @@ public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 	public void testFindAll() {
 		List<ResponseFamiliaDto> listFamilia = familiaService.findAll();
 		assertNotNull(listFamilia);
-		assertEquals(4,listFamilia.size());
+		assertEquals(5,listFamilia.size());
 	}
 	
 	@Test
@@ -49,11 +48,12 @@ public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 	public void testFindById()  {
 		ResponseFamiliaDto buscarFamilia = null;
 		try {
-			buscarFamilia = familiaService.findFamiliaById(1001L);
-			assertEquals("Familia1",buscarFamilia.getNombre());
+			buscarFamilia = familiaService.findById(1001L);
+			assertEquals("Saurópodos",buscarFamilia.getNombre());
+			assertEquals(1001L, buscarFamilia.getId().longValue());
 		} catch (DinosaurioElementNotFoundException e) {
 			// TODO Auto-generated catch block
-			fail("Se esperaba buscar una familia");
+			fail("Se esperaba encontrar una familia");
 		}
 		
 	}
@@ -62,7 +62,7 @@ public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 	@DisplayName("Obtener una familia no existente")
 	public void testFamiliaNoExistente() {
 		try {
-			familiaService.findFamiliaById(0L);
+			familiaService.findById(0L);
 			fail("Se esperaba que el elemento no existiera");
 			
 		} catch (DinosaurioElementNotFoundException e) {
@@ -77,9 +77,10 @@ public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 		familia.setNombre("FamiliaCreada");
 
 		ResponseFamiliaDto familiaCreada = familiaService.create(familia);
+		
 		assertNotNull(familiaCreada);
 		assertEquals("FamiliaCreada", familiaCreada.getNombre());
-		//assertEquals(1, familiaCreada.getId().intValue());
+		assertEquals(1006, familiaCreada.getId().longValue());
 	}
 	
 	@Test
@@ -101,8 +102,30 @@ public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 	}
 	
 	@Test
-	@DisplayName("Eliminar una familia con especies asociadas")
+	@DisplayName("Eliminar una familia que no tiene especies asociadas")
 	public void testDelete() {
+		try {
+			RequestDeleteFamiliaDto borrar = new RequestDeleteFamiliaDto();
+			borrar.setId(1005L);
+			borrar.setConfirmacion(true);
+			familiaService.delete(borrar);
+		}		
+		catch (NotConfirmDeleteDinosaurio e) {
+				// TODO Auto-generated catch block
+				fail("No se ha confirmado el borrado de la familia");
+		} catch (IntegratedForeignKeyException e) {
+			// TODO Auto-generated catch block
+			fail("Esta familia esta asociada a una especie o un conjunto de especies");
+			
+		} catch (DinosaurioElementNotFoundException e) {
+			// TODO Auto-generated catch block
+			fail("Se esperaba que la familia existiese");
+		}
+	}
+
+	@Test
+	@DisplayName("Comprobar que no se puede eliminar una familia que tiene especies asociadas")
+	public void testNotDeleteFamilia() {
 		try {
 			RequestDeleteFamiliaDto borrar = new RequestDeleteFamiliaDto();
 			borrar.setId(1001L);
@@ -115,6 +138,30 @@ public class FamiliaServiceTestCase extends AbstractServiceTestCase  {
 				fail("No se ha confirmado el borrado de la familia");
 		} catch (IntegratedForeignKeyException e) {
 			// TODO Auto-generated catch block
+			
+			
+		} catch (DinosaurioElementNotFoundException e) {
+			// TODO Auto-generated catch block
+			fail("Se esperaba que la familia existiese");
+		}
+	}
+	
+	@Test
+	@DisplayName("No se ha confirmado el borrado de la familia")
+	public void testDeleteNotConfirm() {
+		try {
+			RequestDeleteFamiliaDto borrar = new RequestDeleteFamiliaDto();
+			borrar.setId(1005L);
+			borrar.setConfirmacion(false);
+			familiaService.delete(borrar);
+			fail("No se ha confirmado el borrado de la familia");
+		}		
+		catch (NotConfirmDeleteDinosaurio e) {
+				// TODO Auto-generated catch block
+				
+		} catch (IntegratedForeignKeyException e) {
+			// TODO Auto-generated catch block
+			fail("Esta familia esta asociada a una especie o un conjunto de especies");
 			
 		} catch (DinosaurioElementNotFoundException e) {
 			// TODO Auto-generated catch block

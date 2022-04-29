@@ -17,6 +17,6 @@ public interface RecintoManagementService {
 	List<ResponseRecintoDto> findAll();
 	ResponseRecintoDto findById(Long id) throws RecintoNotFoundException;
 	ResponseRecintoDto create(RequestCreateRecintoDto requestCreateRecintoDto);
-	ResponseRecintoDto update(RequestUpdateRecintoDto requestUpdateRecintoDto);
-	void delete(RequestDeleteRecintoDto requestDeleteRecintoDto) throws NotConfirmRecintoDelete, IntegratedForeignKeyException;
+	ResponseRecintoDto update(RequestUpdateRecintoDto requestUpdateRecintoDto) throws RecintoNotFoundException;
+	void delete(RequestDeleteRecintoDto requestDeleteRecintoDto) throws NotConfirmRecintoDelete, IntegratedForeignKeyException, RecintoNotFoundException;
 }

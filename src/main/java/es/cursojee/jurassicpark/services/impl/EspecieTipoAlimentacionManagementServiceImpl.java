@@ -16,64 +16,94 @@ import es.cursojee.jurassicpark.mapper.EspecieTipoAlimentacionMapper;
 import es.cursojee.jurassicpark.model.Especie;
 import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 import es.cursojee.jurassicpark.model.TipoAlimentacion;
-import es.cursojee.jurassicpark.repositories.EspecieTipoAlimentacionRepository;
-import es.cursojee.jurassicpark.services.EspecieManagementService;
 import es.cursojee.jurassicpark.services.EspecieTipoAlimentacionManagementService;
-import es.cursojee.jurassicpark.services.FamiliaManagementService;
-import es.cursojee.jurassicpark.services.TipoAlimentacionManagementService;
-import lombok.extern.slf4j.Slf4j;
+import es.cursojee.jurassicpark.services.basic.EspecieService;
+import es.cursojee.jurassicpark.services.basic.EspecieTipoAlimentacionService;
+import es.cursojee.jurassicpark.services.basic.TipoAlimentacionService;
 
 @Transactional
 @Service(EspecieTipoAlimentacionManagementService.BEAN_NAME)
-@Slf4j
 public class EspecieTipoAlimentacionManagementServiceImpl implements EspecieTipoAlimentacionManagementService{
 
 	@Autowired
-	private EspecieTipoAlimentacionRepository especieTipoAlimentacionRepository;
+	private EspecieTipoAlimentacionService especieTipoAlimentacionService;
 	@Autowired
 	private EspecieTipoAlimentacionMapper especieTipoAlimentacionMapper;
 	@Autowired
-	private EspecieManagementService especieService;
+	private EspecieService especieService;
+	
 	@Autowired
-	private TipoAlimentacionManagementService tipoAlimentacionService;
+	private TipoAlimentacionService tipoAlimentacionService;
 	
 	@Override
 	public List<ResponseEspecieTipoAlimentacionDto> findAll() {
 		// TODO Auto-generated method stub
-		List<EspecieTipoAlimentacion> especieTipoAlimentacion = especieTipoAlimentacionRepository.findAll();
+		List<EspecieTipoAlimentacion> especieTipoAlimentacion = especieTipoAlimentacionService.findAll();
 		return especieTipoAlimentacionMapper.listEspecieTipoAlimentacionToListResponseEspecieTipoAlimentacionDto(especieTipoAlimentacion);
 		
 	}
 	@Override
-	public ResponseEspecieTipoAlimentacionDto findEspecieTipoAlimentacionById(Long id) throws DinosaurioElementNotFoundException {
+	public ResponseEspecieTipoAlimentacionDto findById(Long id) throws DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
-		EspecieTipoAlimentacion especieTipoAlimentacion = findById(id);
-		return especieTipoAlimentacionMapper.especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(especieTipoAlimentacion);
+		EspecieTipoAlimentacion especieTipoAlimentacion = especieTipoAlimentacionService.findById(id);
+
+		if(especieTipoAlimentacion == null) {
+			throw new DinosaurioElementNotFoundException(" No existe EspecieTipoAlimentacion");
+		}
+		
+		ResponseEspecieTipoAlimentacionDto response = especieTipoAlimentacionMapper.especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(especieTipoAlimentacion);
+		response.setIdEspecie(especieTipoAlimentacion.getEspecie().getId());
+		response.setIdTipoAlimentacion(especieTipoAlimentacion.getTipoAlimentacion().getId());
+		return response;
 	}
 		
 	@Override
 	public ResponseEspecieTipoAlimentacionDto create(RequestCreateEspecieTipoAlimentacionDto requestCreateEspecieTipoAlimentacionDto) throws DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
+		EspecieTipoAlimentacion newEspecieTipoAlimentacion = especieTipoAlimentacionMapper.requestCreateEspecieTipoAlimentacionDtoToEspecieTipoAlimentacion(requestCreateEspecieTipoAlimentacionDto);
 		Especie especie = especieService.findById(requestCreateEspecieTipoAlimentacionDto.getIdEspecie());
 		TipoAlimentacion tipoAlimentacion = tipoAlimentacionService.findById(requestCreateEspecieTipoAlimentacionDto.getIdTipoAlimentacion());
+	
+		if(newEspecieTipoAlimentacion == null) {
+			throw new DinosaurioElementNotFoundException(" No existe EspecieTipoAlimentacion");
+		}
 		
-		EspecieTipoAlimentacion newEspecieTipoAlimentacion = especieTipoAlimentacionMapper.requestCreateEspecieTipoAlimentacionDtoToEspecieTipoAlimentacion(requestCreateEspecieTipoAlimentacionDto);
-		newEspecieTipoAlimentacion = especieTipoAlimentacionRepository.save(newEspecieTipoAlimentacion);
-		return especieTipoAlimentacionMapper.especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(newEspecieTipoAlimentacion);
+		if(especie == null || tipoAlimentacion==null) {
+			throw new DinosaurioElementNotFoundException(" No existe ese tipo de alimentación o esa especie");
+		}
+		
+		newEspecieTipoAlimentacion = especieTipoAlimentacionService.create(newEspecieTipoAlimentacion);
+		
+		ResponseEspecieTipoAlimentacionDto response = especieTipoAlimentacionMapper.especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(newEspecieTipoAlimentacion);
+		response.setIdEspecie(especie.getId());
+		response.setIdTipoAlimentacion(tipoAlimentacion.getId());
+		return response;
 	}
 
 	@Override
 	public ResponseEspecieTipoAlimentacionDto update(
 			RequestUpdateEspecieTipoAlimentacionDto requestUpdateEspecieTipoAlimentacionDto) throws DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
+		EspecieTipoAlimentacion especieTipoAlimentacion = especieTipoAlimentacionService.findById(requestUpdateEspecieTipoAlimentacionDto.getId());
 		Especie especie = especieService.findById(requestUpdateEspecieTipoAlimentacionDto.getIdEspecie());
 		TipoAlimentacion tipoAlimentacion = tipoAlimentacionService.findById(requestUpdateEspecieTipoAlimentacionDto.getIdTipoAlimentacion());
-		EspecieTipoAlimentacion especieTipoAlimentacion = findById(requestUpdateEspecieTipoAlimentacionDto.getId());
 		
+		if(especieTipoAlimentacion == null) {
+			throw new DinosaurioElementNotFoundException(" No existe EspecieTipoAlimentacion");
+		}
+		
+		if(especie == null || tipoAlimentacion==null) {
+			throw new DinosaurioElementNotFoundException(" No existe ese tipo de alimentación o esa especie");
+		}
+				
 		especieTipoAlimentacion = especieTipoAlimentacionMapper.requestUpdateEspecieTipoAlimentacionDtoToEspecieTipoAlimentacion(requestUpdateEspecieTipoAlimentacionDto, especieTipoAlimentacion);
-		especieTipoAlimentacionRepository.save(especieTipoAlimentacion);
+		especieTipoAlimentacion = especieTipoAlimentacionService.update(especieTipoAlimentacion);
 		
-		return especieTipoAlimentacionMapper.especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(especieTipoAlimentacion);
+		ResponseEspecieTipoAlimentacionDto response = especieTipoAlimentacionMapper.especieTipoAlimentacionToResponseEspecieTipoAlimentacionDto(especieTipoAlimentacion);
+		response.setIdEspecie(especie.getId());
+		response.setIdTipoAlimentacion(tipoAlimentacion.getId());
+		return response;
+		
 	}
 
 	@Override
@@ -83,25 +113,26 @@ public class EspecieTipoAlimentacionManagementServiceImpl implements EspecieTipo
 		if(!requestDeleteEspecieTipoAlimentacionDto.getConfirmacion()) {
 			throw new NotConfirmDeleteDinosaurio("No se ha confirmado el borrado de EspecieTipoAlimentación");
 		}
-		EspecieTipoAlimentacion especieTipoAlimentacion = findById(requestDeleteEspecieTipoAlimentacionDto.getId());
-		especieTipoAlimentacionRepository.delete(especieTipoAlimentacion);		
+		
+		EspecieTipoAlimentacion especieTipoAlimentacion = especieTipoAlimentacionService.findById(requestDeleteEspecieTipoAlimentacionDto.getId());
+		
+		if(especieTipoAlimentacion == null) {
+			throw new DinosaurioElementNotFoundException(" No existe EspecieTipoAlimentacion");
+		}
+		
+		especieTipoAlimentacionService.delete(especieTipoAlimentacion);		
 	}
 	
 	@Override
 	public EspecieTipoAlimentacion findByIdEspecie(Long id) {
-		return especieTipoAlimentacionRepository.findByIdEspecie(id);
+		return especieTipoAlimentacionService.findByIdEspecie(id);
 	}
-	
-	public EspecieTipoAlimentacion findById(Long id) throws DinosaurioElementNotFoundException {
+	@Override
+	public List<EspecieTipoAlimentacion> findByIdAlimentacion(Long id) {
 		// TODO Auto-generated method stub
-		EspecieTipoAlimentacion especieTipoAlimentacion = especieTipoAlimentacionRepository.getById(id);
-		if(especieTipoAlimentacion == null) {
-			throw new DinosaurioElementNotFoundException("No se ha encontrado nunguna EspecieTipoAlimentacion con ese id");
-		}
-		
-		return especieTipoAlimentacion;
+		List<EspecieTipoAlimentacion> listaEspecieTipoAlimentacion = especieTipoAlimentacionService.findByIdAlimentacion(id);
+		return listaEspecieTipoAlimentacion;
 	}
-	
-	
+		
 
 }

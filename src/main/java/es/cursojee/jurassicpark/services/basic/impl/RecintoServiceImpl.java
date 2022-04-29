@@ -8,13 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.cursojee.jurassicpark.model.Recinto;
 import es.cursojee.jurassicpark.repositories.RecintoRepository;
-import es.cursojee.jurassicpark.services.EspecieManagementService;
 import es.cursojee.jurassicpark.services.basic.RecintoService;
-import lombok.extern.slf4j.Slf4j;
 
 @Transactional
-@Service(EspecieManagementService.BEAN_NAME)
-@Slf4j
+@Service(RecintoService.BEAN_NAME)
 public class RecintoServiceImpl implements RecintoService{
 	
 	@Autowired

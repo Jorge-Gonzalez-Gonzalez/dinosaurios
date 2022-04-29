@@ -11,4 +11,5 @@ public class RequestUpdateEspecieDto {
 	private Integer longitud;
 	private Integer anioDesde;
 	private Integer anioHasta;
+	private Long idFamilia;
 }

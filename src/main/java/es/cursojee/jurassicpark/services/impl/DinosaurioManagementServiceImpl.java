@@ -12,24 +12,29 @@ import es.cursojee.jurassicpark.controller.dto.dinosaurio.RequestUpdateDinosauri
 import es.cursojee.jurassicpark.controller.dto.dinosaurio.ResponseDinosaurioDto;
 import es.cursojee.jurassicpark.controller.dto.recinto.RequestUpdateRecintoDto;
 import es.cursojee.jurassicpark.controller.dto.recinto.ResponseRecintoDto;
+import es.cursojee.jurassicpark.exception.CompartirRecintoException;
 import es.cursojee.jurassicpark.exception.DinosaurioElementNotFoundException;
+import es.cursojee.jurassicpark.exception.NotConfirmDeleteDinosaurio;
+import es.cursojee.jurassicpark.exception.RecintoNotFoundException;
+import es.cursojee.jurassicpark.exception.SobrepasadoNumeroDinosauriosEnRecintoException;
 import es.cursojee.jurassicpark.mapper.DinosaurioMapper;
 import es.cursojee.jurassicpark.mapper.RecintoMapper;
 import es.cursojee.jurassicpark.model.Dinosaurio;
+import es.cursojee.jurassicpark.model.Especie;
 import es.cursojee.jurassicpark.model.EspecieTipoAlimentacion;
 import es.cursojee.jurassicpark.model.Recinto;
 import es.cursojee.jurassicpark.model.TipoAlimentacion;
 import es.cursojee.jurassicpark.services.DinosaurioManagementService;
-import es.cursojee.jurassicpark.services.EspecieManagementService;
 import es.cursojee.jurassicpark.services.EspecieTipoAlimentacionManagementService;
 import es.cursojee.jurassicpark.services.RecintoManagementService;
-import es.cursojee.jurassicpark.services.TipoAlimentacionManagementService;
 import es.cursojee.jurassicpark.services.basic.DinosaurioService;
-import lombok.extern.slf4j.Slf4j;
+import es.cursojee.jurassicpark.services.basic.EspecieService;
+import es.cursojee.jurassicpark.services.basic.RecintoService;
+import es.cursojee.jurassicpark.services.basic.TipoAlimentacionService;
 
 @Transactional
-@Service(EspecieManagementService.BEAN_NAME)
-@Slf4j
+@Service(DinosaurioManagementService.BEAN_NAME)
+
 public class DinosaurioManagementServiceImpl implements DinosaurioManagementService {
 	
 	@Autowired
@@ -45,9 +50,16 @@ public class DinosaurioManagementServiceImpl implements DinosaurioManagementServ
 	private EspecieTipoAlimentacionManagementService especieTipoAlimentacionService;
 	
 	@Autowired
-	private TipoAlimentacionManagementService tipoAlimentacionService;
+	private TipoAlimentacionService tipoAlimentacionService;
 	
 	@Autowired
+	private EspecieService especieService;
+	
+	@Autowired
+	private RecintoService recintoService;
+	
+	@Autowired
+	
 	private RecintoManagementService recintoManagementService;
 	
 	@Override
@@ -64,58 +76,98 @@ public class DinosaurioManagementServiceImpl implements DinosaurioManagementServ
 		if(dinosaurio == null) {
 			throw new DinosaurioElementNotFoundException("No exxiste el dinosaurio con ese id");
 		}
-		return dinosaurioMapper.dinosaurioToResponseDinosaurioDto(dinosaurio);
+		ResponseDinosaurioDto response =dinosaurioMapper.dinosaurioToResponseDinosaurioDto(dinosaurio);
+		response.setIdEspecie(dinosaurio.getEspecie().getId());
+		response.setIdRecinto(dinosaurio.getRecinto().getId());
+		
+		return response;
 	}
 
 	@Override
-	public ResponseDinosaurioDto create(RequestCreateDinosaurioDto requestCreateDinosaurioDto) {
+	public ResponseDinosaurioDto create(RequestCreateDinosaurioDto requestCreateDinosaurioDto) throws CompartirRecintoException, RecintoNotFoundException, SobrepasadoNumeroDinosauriosEnRecintoException, DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
+		Especie especie = especieService.findById(requestCreateDinosaurioDto.getIdEspecie());
+		Recinto recinto = recintoService.findById(requestCreateDinosaurioDto.getIdRecinto());
 		EspecieTipoAlimentacion especieAlimentacion = especieTipoAlimentacionService.findByIdEspecie(requestCreateDinosaurioDto.getIdEspecie());
 		TipoAlimentacion tipoAlimentacion = tipoAlimentacionService.findById(especieAlimentacion.getTipoAlimentacion().getId());
 		ResponseRecintoDto responseRecinto = recintoManagementService.findById(requestCreateDinosaurioDto.getIdRecinto());
 		Dinosaurio newDinosaurio = null;
 		
-		if(!tipoAlimentacion.getDescripcion().equals(responseRecinto.getTipoReciento())) {
+		if(especie == null) {
+			throw new DinosaurioElementNotFoundException("No existe la especie");
+		}
+		
+		if(recinto == null) {
+			throw new RecintoNotFoundException("No existe el recinto");
+		}
+		
+		
+		if(!tipoAlimentacion.getDescripcion().equals(responseRecinto.getTipoRecinto())) {
 			throw new CompartirRecintoException("No se pueden juntar dinosaurios carnivoros y Herbívoros en el mismo recinto");
 		}
 		
-		if(responseRecinto.getNumDinosaurios()>4) {
-			
+		if(responseRecinto.getNumDinosaurios()>=4) {
+			throw new SobrepasadoNumeroDinosauriosEnRecintoException("Ya hay 4 dinosaurios en ese recinto");
 		}
 		
 		newDinosaurio = dinosaurioMapper.requestCreatetDinosaurioDtoToDinosaurio(requestCreateDinosaurioDto);
 		newDinosaurio = dinosaurioService.create(newDinosaurio);
 		
-		Recinto recinto = recintoMapper.responseRecintoDtoToRecinto(responseRecinto);
+		recinto = recintoMapper.responseRecintoDtoToRecinto(responseRecinto);
 		recinto.setNumDinosaurios(recinto.getNumDinosaurios() + 1);
 		
 		RequestUpdateRecintoDto updateRecinto = recintoMapper.recintoToRequestUpdateRecintoDto(recinto);
 		recintoManagementService.update(updateRecinto);
 		
+		ResponseDinosaurioDto response = dinosaurioMapper.dinosaurioToResponseDinosaurioDto(newDinosaurio);
+		response.setIdEspecie(especie.getId());
+		response.setIdRecinto(recinto.getId());
 		
-		
-		
-		
-		
-		return dinosaurioMapper.dinosaurioToResponseDinosaurioDto(newDinosaurio);
+		return response;
 	}
 
 	@Override
-	public ResponseDinosaurioDto update(RequestUpdateDinosaurioDto requestUpdateDinosaurioDto) {
+	public ResponseDinosaurioDto update(RequestUpdateDinosaurioDto requestUpdateDinosaurioDto) throws DinosaurioElementNotFoundException, RecintoNotFoundException {
 		// TODO Auto-generated method stub
 		Dinosaurio updateDinosaurio = dinosaurioService.findById(requestUpdateDinosaurioDto.getId());
+		Especie especie = especieService.findById(requestUpdateDinosaurioDto.getIdEspecie());
+		Recinto recinto = recintoService.findById(requestUpdateDinosaurioDto.getIdRecinto());
+				
 		if(updateDinosaurio == null) {
-			
+			throw new DinosaurioElementNotFoundException("No existe el dinosaurio");
 		}
+	
+		if(especie == null) {
+			throw new DinosaurioElementNotFoundException("No existe la especie");
+		}
+		
+		if(recinto == null) {
+			throw new RecintoNotFoundException("No existe el recinto");
+		}
+		
 		updateDinosaurio = dinosaurioMapper.requestUpdateDinosaurioDtoToDinosaurio(requestUpdateDinosaurioDto, updateDinosaurio);
 		updateDinosaurio = dinosaurioService.update(updateDinosaurio);
 		
-		return dinosaurioMapper.dinosaurioToResponseDinosaurioDto(updateDinosaurio);
+
+		ResponseDinosaurioDto response = dinosaurioMapper.dinosaurioToResponseDinosaurioDto(updateDinosaurio);
+		response.setIdEspecie(especie.getId());
+		response.setIdRecinto(recinto.getId());
+		
+		return response;
 	}
 
 	@Override
-	public void delete(RequestDeleteDinosaurioDto requestDeleteDinosaurioDto) {
+	public void delete(RequestDeleteDinosaurioDto requestDeleteDinosaurioDto) throws NotConfirmDeleteDinosaurio, DinosaurioElementNotFoundException {
 		// TODO Auto-generated method stub
+		if(!requestDeleteDinosaurioDto.getConfirmacion()) {
+			throw new NotConfirmDeleteDinosaurio("No se ha confirmado el borrado del DInosaurio");
+		}
+		
+		Dinosaurio deleteDinosaurio = dinosaurioService.findById(requestDeleteDinosaurioDto.getId());
+		if(deleteDinosaurio == null) {
+			throw new DinosaurioElementNotFoundException("No exxiste el dinosaurio con ese id");
+		}
+		dinosaurioService.delete(deleteDinosaurio);
 		
 	}
 
